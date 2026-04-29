@@ -18,6 +18,9 @@ CryptoVault transforms raw CoinGecko market data into an immersive trading works
 - **Persistent Watchlist** — Star coins; they pin to top and survive refreshes
 - **Mouse Light Leak** — Cursor-tracking radial glow across the deep space dark canvas
 - **Detail Drawers** — Click any asset for deep metrics (24h High/Low, Market Cap, Volume, Rank)
+- **Sort Dropdown** — Sort by Market Cap, 24h Change, or Volume
+- **Last Updated Timestamp** — Live timestamp showing when data was last polled
+- **Animated Icons** — Lucide icons scale and brighten on hover for tactile feedback
 
 ## Architecture
 
@@ -55,10 +58,11 @@ Generates contextual signals from live data:
 - **< -8%** → Red glow (`shadow-red-500/12`)
 - Staggered entrance animations
 
-### Deep Space Dark Mode
-Custom palette on `zinc-950` (`#09090b`):
-- Cards: `bg-white/[0.03]` + `backdrop-blur-2xl` + `border-white/[0.05]`
-- Accent: Indigo (`#6366f1`)
+### Dark / Light Theme Toggle
+- Sidebar toggle button cycles between **Dark**, **Light**, and **System** themes
+- All components adapt via CSS variables (`--background`, `--foreground`, `--glass-tint`, etc.)
+- Deep Space Dark palette: `zinc-950` (`#09090b`) with indigo (`#6366f1`) accent
+- Light mode: clean neutral palette with subtle glassmorphism borders
 
 ## Getting Started
 
@@ -96,7 +100,8 @@ components/
 │   ├── asset-grid.tsx       → Semantic card grid
 │   ├── smart-filter.tsx     → Search + filters
 │   ├── crypto-card.tsx      → Individual card
-│   └── detail-drawer.tsx    → Metrics drawer
+│   ├── detail-drawer.tsx    → Metrics drawer
+│   └── sparkline.tsx        → Mini line chart for detail drawer
 ├── ui/
 │   ├── glass-card.tsx       → Reusable glass card
 │   └── mouse-light-leak.tsx → Cursor glow effect

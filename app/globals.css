@@ -3,25 +3,32 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ==========================================================================
+   THEME SYSTEM: Light & Dark Mode Variables
+   - :root defines the LIGHT mode palette
+   - .dark class defines the DARK mode palette (Deep Space)
+   - next-themes toggles the .dark class on <html> at runtime
+   ========================================================================== */
+
 :root {
-  --background: #09090b;
-  --foreground: #fafafa;
-  --card: #18181b;
-  --card-foreground: #fafafa;
-  --popover: #18181b;
-  --popover-foreground: #fafafa;
+  --background: #fafafa;
+  --foreground: #18181b;
+  --card: #ffffff;
+  --card-foreground: #18181b;
+  --popover: #ffffff;
+  --popover-foreground: #18181b;
   --primary: #6366f1;
-  --primary-foreground: #fafafa;
-  --secondary: #27272a;
-  --secondary-foreground: #fafafa;
-  --muted: #27272a;
-  --muted-foreground: #a1a1aa;
-  --accent: #27272a;
-  --accent-foreground: #fafafa;
+  --primary-foreground: #ffffff;
+  --secondary: #f4f4f5;
+  --secondary-foreground: #18181b;
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
+  --accent: #f4f4f5;
+  --accent-foreground: #18181b;
   --destructive: #ef4444;
-  --destructive-foreground: #fafafa;
-  --border: rgba(255,255,255,0.05);
-  --input: rgba(255,255,255,0.05);
+  --destructive-foreground: #ffffff;
+  --border: rgba(0,0,0,0.08);
+  --input: rgba(0,0,0,0.08);
   --ring: #6366f1;
   --chart-1: #6366f1;
   --chart-2: #22c55e;
@@ -29,14 +36,22 @@
   --chart-4: #f59e0b;
   --chart-5: #8b5cf6;
   --radius: 0.75rem;
-  --sidebar: #09090b;
-  --sidebar-foreground: #fafafa;
+  --sidebar: #f4f4f5;
+  --sidebar-foreground: #18181b;
   --sidebar-primary: #6366f1;
-  --sidebar-primary-foreground: #fafafa;
-  --sidebar-accent: #18181b;
-  --sidebar-accent-foreground: #fafafa;
-  --sidebar-border: rgba(255,255,255,0.05);
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #e4e4e7;
+  --sidebar-accent-foreground: #18181b;
+  --sidebar-border: rgba(0,0,0,0.08);
   --sidebar-ring: #6366f1;
+
+  /* Glassmorphism tint color for light mode */
+  --glass-tint: rgba(0,0,0,0.03);
+  --glass-border: rgba(0,0,0,0.06);
+  --glass-hover: rgba(0,0,0,0.05);
+
+  /* Mouse light leak glow — more visible in dark mode, subtle in light */
+  --glow-color: rgba(99,102,241,0.08);
 }
 
 .dark {
@@ -72,6 +87,14 @@
   --sidebar-accent-foreground: #fafafa;
   --sidebar-border: rgba(255,255,255,0.05);
   --sidebar-ring: #6366f1;
+
+  /* Glassmorphism tint color for dark mode */
+  --glass-tint: rgba(255,255,255,0.03);
+  --glass-border: rgba(255,255,255,0.05);
+  --glass-hover: rgba(255,255,255,0.06);
+
+  /* Mouse light leak glow — stronger indigo tint in dark space */
+  --glow-color: rgba(99,102,241,0.15);
 }
 
 @theme inline {
@@ -150,16 +173,21 @@
   animation: pulse-glow 2s ease-in-out infinite;
 }
 
+/* ==========================================================================
+   GLASSMORPHISM CARD UTILITY
+   Uses CSS custom properties so tint color adapts to light/dark theme
+   ========================================================================== */
+
 .glass-card {
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--glass-tint);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
 }
 
 .glass-card-hover:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.08);
+  background: var(--glass-hover);
+  border-color: var(--glass-hover);
 }
 
 

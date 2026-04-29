@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { Analytics } from "@vercel/analytics/next"
 import { QueryClientProvider } from "@/components/providers/query-client-provider"
+import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/sonner"
 import "./globals.css"
 
@@ -27,6 +28,13 @@ export const metadata: Metadata = {
   },
 }
 
+/**
+ * Root Layout
+ * Wraps the entire application with:
+ * - ThemeProvider: manages dark/light mode via next-themes (class attribute strategy)
+ * - QueryClientProvider: TanStack Query for server-state management
+ * - Toaster: Sonner toast notifications
+ */
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -34,10 +42,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="font-sans antialiased bg-background">
-        <QueryClientProvider>
-          {children}
-        </QueryClientProvider>
+      <body className="font-sans antialiased bg-background text-foreground">
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
+          <QueryClientProvider>
+            {children}
+          </QueryClientProvider>
+        </ThemeProvider>
         <Toaster />
         {process.env.NODE_ENV === "production" && <Analytics />}
       </body>

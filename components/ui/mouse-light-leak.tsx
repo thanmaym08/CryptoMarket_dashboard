@@ -1,5 +1,14 @@
 "use client"
 
+/**
+ * MouseLightLeak Component
+ * - Creates a 300px soft indigo radial glow that follows the mouse cursor
+ * - Uses requestAnimationFrame-friendly transform updates (0.1s ease-out)
+ * - Glow color is set via CSS custom property --glow-color so it can be
+ *   overridden in light/dark themes (subtle in both modes)
+ * - Rendered as a fixed full-screen layer with pointer-events: none
+ */
+
 import { useEffect, useRef } from "react"
 
 export function MouseLightLeak() {
@@ -12,6 +21,7 @@ export function MouseLightLeak() {
         const rect = containerRef.current.getBoundingClientRect()
         const x = e.clientX - rect.left
         const y = e.clientY - rect.top
+        // Center the 300px glow on the cursor
         glowRef.current.style.transform = `translate(${x - 150}px, ${y - 150}px)`
       }
     }
@@ -33,8 +43,9 @@ export function MouseLightLeak() {
         ref={glowRef}
         className="absolute left-0 top-0 h-[300px] w-[300px] rounded-full opacity-40 blur-[120px]"
         style={{
+          // Uses CSS custom property for theme-aware glow color
           background:
-            "radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 70%)",
+            "radial-gradient(circle, var(--glow-color, rgba(99,102,241,0.15)) 0%, transparent 70%)",
           willChange: "transform",
           transition: "transform 0.1s ease-out",
         }}

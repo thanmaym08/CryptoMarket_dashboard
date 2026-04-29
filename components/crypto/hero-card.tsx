@@ -1,5 +1,14 @@
 "use client"
 
+/**
+ * HeroCard Component
+ * - Displays the #1 ranked cryptocurrency in a large "hero" bento tile
+ * - Contains: coin identity (logo, name, symbol), current price, 24h % change
+ * - Interactive Recharts AreaChart with crosshair tooltip
+ * - Bottom row shows 24h High/Low, Market Cap, and Volume
+ * - Uses CSS variables so text and borders adapt to light/dark mode
+ */
+
 import { motion } from "framer-motion"
 import { TrendingUp, TrendingDown, Flame } from "lucide-react"
 import { GlassCard } from "@/components/ui/glass-card"
@@ -17,6 +26,7 @@ interface HeroCardProps {
   coin: CoinMarketData | undefined
 }
 
+/** Formats a USD price: shows 2 decimals above $1, 6 decimals below */
 function formatPrice(price: number): string {
   if (price >= 1) {
     return `$${price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
@@ -25,17 +35,20 @@ function formatPrice(price: number): string {
 }
 
 export function HeroCard({ coin }: HeroCardProps) {
+  // Loading skeleton state while CoinGecko data is fetching
   if (!coin) {
     return (
       <GlassCard className="col-span-12 lg:col-span-8 h-[340px] animate-pulse-glow">
         <div className="flex h-full items-center justify-center">
-          <div className="text-zinc-500">Loading market leader...</div>
+          <div className="text-muted-foreground animate-pulse">Loading market leader...</div>
         </div>
       </GlassCard>
     )
   }
 
   const isPositive = (coin.price_change_percentage_24h ?? 0) >= 0
+
+  // Build chart data array from the 7-day sparkline price series
   const sparklineData =
     coin.sparkline_in_7d?.price.map((p, i) => ({
       time: i,
@@ -45,35 +58,36 @@ export function HeroCard({ coin }: HeroCardProps) {
   return (
     <GlassCard className="col-span-12 lg:col-span-8 h-[340px] animate-pulse-glow">
       <div className="flex h-full flex-col p-5">
-        {/* Header */}
+        {/* ── Top Row: Coin Identity + Price ── */}
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/[0.05]">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-muted">
               <img src={coin.image} alt={coin.name} className="h-9 w-9 rounded-full" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-2xl font-bold text-white">{coin.name}</h2>
-                <span className="rounded-md bg-white/[0.04] px-1.5 py-0.5 text-xs font-medium text-zinc-400 uppercase">
+                <h2 className="text-2xl font-bold text-foreground">{coin.name}</h2>
+                <span className="rounded-md bg-muted px-1.5 py-0.5 text-xs font-medium text-muted-foreground uppercase">
                   {coin.symbol}
                 </span>
               </div>
               <div className="mt-1 flex items-center gap-2">
-                <Flame className="h-3.5 w-3.5 text-amber-400" />
-                <span className="text-xs text-amber-400/80">Trending #1</span>
+                <Flame className="h-3.5 w-3.5 text-amber-500" />
+                <span className="text-xs text-amber-500/80">Trending #1</span>
               </div>
             </div>
           </div>
           <div className="text-right">
-            <div className="text-3xl font-bold tracking-tight text-white">
+            <div className="text-3xl font-bold tracking-tight text-foreground">
               {formatPrice(coin.current_price)}
             </div>
+            {/* 24h change badge: green background for gainers, red for losers */}
             <div
               className={cn(
                 "mt-1 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold",
                 isPositive
-                  ? "bg-emerald-500/10 text-emerald-400"
-                  : "bg-red-500/10 text-red-400"
+                  ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                  : "bg-red-500/10 text-red-600 dark:text-red-400"
               )}
             >
               {isPositive ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
@@ -83,7 +97,7 @@ export function HeroCard({ coin }: HeroCardProps) {
           </div>
         </div>
 
-        {/* Chart */}
+        {/* ── Interactive Chart ── */}
         <div className="mt-4 flex-1 min-h-0">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={sparklineData}>
@@ -119,25 +133,25 @@ export function HeroCard({ coin }: HeroCardProps) {
           </ResponsiveContainer>
         </div>
 
-        {/* Bottom stats */}
-        <div className="mt-2 flex items-center gap-6 border-t border-white/[0.04] pt-3">
+        {/* ── Bottom Stats Row ── */}
+        <div className="mt-2 flex items-center gap-6 border-t border-border pt-3">
           <div>
-            <p className="text-[10px] uppercase tracking-wider text-zinc-500">24h High</p>
-            <p className="text-sm font-semibold text-zinc-300">{formatPrice(coin.high_24h)}</p>
+            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">24h High</p>
+            <p className="text-sm font-semibold text-foreground">{formatPrice(coin.high_24h)}</p>
           </div>
           <div>
-            <p className="text-[10px] uppercase tracking-wider text-zinc-500">24h Low</p>
-            <p className="text-sm font-semibold text-zinc-300">{formatPrice(coin.low_24h)}</p>
+            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">24h Low</p>
+            <p className="text-sm font-semibold text-foreground">{formatPrice(coin.low_24h)}</p>
           </div>
           <div>
-            <p className="text-[10px] uppercase tracking-wider text-zinc-500">Market Cap</p>
-            <p className="text-sm font-semibold text-zinc-300">
+            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Market Cap</p>
+            <p className="text-sm font-semibold text-foreground">
               ${(coin.market_cap / 1e9).toFixed(2)}B
             </p>
           </div>
           <div>
-            <p className="text-[10px] uppercase tracking-wider text-zinc-500">Volume</p>
-            <p className="text-sm font-semibold text-zinc-300">
+            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Volume</p>
+            <p className="text-sm font-semibold text-foreground">
               ${(coin.total_volume / 1e9).toFixed(2)}B
             </p>
           </div>

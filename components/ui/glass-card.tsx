@@ -1,5 +1,14 @@
 "use client"
 
+/**
+ * GlassCard Component
+ * - Reusable glassmorphic card wrapper used across the dashboard
+ * - Background tint auto-adapts to light/dark via CSS custom properties (--glass-tint)
+ * - Supports a shimmer sweep animation triggered by price updates
+ * - Supports semantic glow colors (green/red) for extreme market moves
+ * - Uses Framer Motion for layout transitions and hover lift
+ */
+
 import { useRef, useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { cn } from "@/lib/utils"
@@ -7,7 +16,9 @@ import { cn } from "@/lib/utils"
 interface GlassCardProps {
   children: React.ReactNode
   className?: string
+  /** Triggers a diagonal shimmer sweep across the card surface */ 
   shimmer?: boolean
+  /** Glow color when a coin makes an extreme move (>8% up/down) */
   semanticGlow?: "green" | "red" | "neutral"
   layoutId?: string
   onClick?: () => void
@@ -21,6 +32,7 @@ export function GlassCard({
   layoutId,
   onClick,
 }: GlassCardProps) {
+  // Local shimmer state — fires when `shimmer` prop flips to true
   const [isShimmering, setIsShimmering] = useState(false)
   const shimmerTimer = useRef<NodeJS.Timeout | null>(null)
 
@@ -35,6 +47,7 @@ export function GlassCard({
     }
   }, [shimmer])
 
+  // Semantic glow shadows: green for surges, red for crashes
   const glowColors = {
     green: "shadow-[0_0_24px_rgba(34,197,94,0.12)] border-emerald-500/20",
     red: "shadow-[0_0_24px_rgba(239,68,68,0.12)] border-red-500/20",
@@ -49,16 +62,14 @@ export function GlassCard({
       onClick={onClick}
       className={cn(
         "relative overflow-hidden rounded-xl",
-        "bg-white/[0.03] backdrop-blur-2xl",
-        "border border-white/[0.05]",
-        "transition-colors duration-300",
-        "hover:bg-white/[0.05] hover:border-white/[0.08]",
+        // Core glass effect: CSS var(--glass-tint) adapts light/dark automatically
+        "glass-card glass-card-hover backdrop-blur-2xl",
         semanticGlow && glowColors[semanticGlow],
         onClick && "cursor-pointer",
         className
       )}
     >
-      {/* Shimmer overlay */}
+      {/* Shimmer overlay — diagonal white streak sweeping left-to-right */}
       <AnimatePresence>
         {isShimmering && (
           <motion.div
@@ -73,7 +84,7 @@ export function GlassCard({
         )}
       </AnimatePresence>
 
-      {/* Content */}
+      {/* Actual card content sits above shimmer layer */}
       <div className="relative z-0">{children}</div>
     </motion.div>
   )
